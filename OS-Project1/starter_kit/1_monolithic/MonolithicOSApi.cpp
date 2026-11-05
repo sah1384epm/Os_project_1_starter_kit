@@ -39,10 +39,11 @@ int MonolithicOSApi::close(int handle) {
     return kernel_.syscall(SYS_CLOSE, args);
 }
 void MonolithicOSApi::console_write(const std::string& text) {
-    // TODO
-    // Forward console output through the syscall dispatcher.
-
-    // YOUR CODE HERE
+    void MonolithicOSApi::console_write(const std::string& text) {
+    SyscallArgs args;
+    args.text = text;
+    kernel_.syscall(SYS_CONSOLE_WRITE, args);
+}
     (void)text;
 }
 
