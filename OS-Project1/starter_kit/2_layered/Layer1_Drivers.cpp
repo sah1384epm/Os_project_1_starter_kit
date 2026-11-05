@@ -35,4 +35,3 @@ size_t Layer1_Drivers::get_capacity_sectors() const {
 
 } // namespace layered
 } // namespace os_sim
-```

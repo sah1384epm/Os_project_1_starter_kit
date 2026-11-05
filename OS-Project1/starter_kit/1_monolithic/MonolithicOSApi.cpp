@@ -1,4 +1,3 @@
-```cpp
 #include "MonolithicOSApi.hpp"
 
 namespace os_sim {
@@ -54,4 +53,3 @@ std::string MonolithicOSApi::get_architecture_name() const {
 
 } // namespace monolithic
 } // namespace os_sim
-```
