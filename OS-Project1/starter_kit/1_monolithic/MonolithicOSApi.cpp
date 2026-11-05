@@ -13,16 +13,19 @@ int MonolithicOSApi::open(const std::string& path, OpenMode mode) {
 }
 
 int MonolithicOSApi::read(int handle, std::vector<uint8_t>& out_buffer, size_t max_bytes) {
-    // TODO
-    // Forward the read request and resize the output buffer to the result.
-
-    // YOUR CODE HERE
-    (void)handle;
-    (void)out_buffer;
-    (void)max_bytes;
-    return ErrorCode::InvalidHandle;
+    out_buffer.assign(max_bytes, 0);
+    SyscallArgs args;
+    args.handle = handle;
+    args.buffer = out_buffer.data();
+    args.count = max_bytes;
+    int result = kernel_.syscall(SYS_READ, args);
+    if (result > 0) {
+        out_buffer.resize(static_cast<size_t>(result));
+    } else {
+        out_buffer.clear();
+    }
+    return result;
 }
-
 int MonolithicOSApi::write(int handle, const std::vector<uint8_t>& data) {
     // TODO
     // Forward the write request through the syscall dispatcher.
