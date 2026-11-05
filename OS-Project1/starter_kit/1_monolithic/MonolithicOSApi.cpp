@@ -34,14 +34,10 @@ int MonolithicOSApi::write(int handle, const std::vector<uint8_t>& data) {
     return kernel_.syscall(SYS_WRITE, args);
 }
 int MonolithicOSApi::close(int handle) {
-    // TODO
-    // Forward the close request through the syscall dispatcher.
-
-    // YOUR CODE HERE
-    (void)handle;
-    return ErrorCode::InvalidHandle;
+    SyscallArgs args;
+    args.handle = handle;
+    return kernel_.syscall(SYS_CLOSE, args);
 }
-
 void MonolithicOSApi::console_write(const std::string& text) {
     // TODO
     // Forward console output through the syscall dispatcher.
