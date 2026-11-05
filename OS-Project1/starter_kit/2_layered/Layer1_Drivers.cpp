@@ -14,6 +14,7 @@ bool Layer1_Drivers::driver_read_sector(size_t sector_id, std::array<uint8_t, DI
     }
     return ok;
 }
+
 bool Layer1_Drivers::driver_write_sector(size_t sector_id, const std::array<uint8_t, DISK_BLOCK_SIZE>& buf) {
     tracer_.record_layer_transition(1, 0, "WRITE_SECTOR");
     bool ok = hw_.raw_write_block(sector_id, buf);
@@ -23,13 +24,15 @@ bool Layer1_Drivers::driver_write_sector(size_t sector_id, const std::array<uint
     return ok;
 }
 
-oid Layer1_Drivers::driver_write_display(const std::string& text) {
+void Layer1_Drivers::driver_write_display(const std::string& text) {
     tracer_.record_layer_transition(1, 0, "WRITE_DISPLAY");
     hw_.raw_write_console(text);
 }
+
 size_t Layer1_Drivers::get_capacity_sectors() const {
     return hw_.get_total_blocks();
 }
 
 } // namespace layered
 } // namespace os_sim
+```
