@@ -39,13 +39,25 @@ bool ModularKernel::unload_module(const std::string& name) {
 
     auto mod = modules_[name];
 
-    // TODO
-    // Reject unloading while file handles are open; otherwise unload safely, clear active references, and trace the outcome.
+    IFileSystemModule* fs = mod->as_fs();
+    if (fs != nullptr && fs->get_active_handle_count() > 0) {
+        tracer_.record_call("KernelCore", name, "REJECTED_UNLOAD",
+                            "Active handles: " + std::to_string(fs->get_active_handle_count()));
+        return false;
+    }
 
-    // YOUR CODE HERE
-    (void)mod;
-    return false;
-}
+    mod->on_unload();
+    if (fs != nullptr && active_fs_ == fs) {
+        active_fs_ = nullptr;
+    }
+    IConsoleModule* console = mod->as_console();
+    if (console != nullptr && active_console_ == console) {
+        active_console_ = nullptr;
+    }
+    modules_.erase(name);
+    tracer_.record_call("KernelCore", name, "SUCCESS_UNLOAD", "Type: " + mod->get_type());
+    return true;
+    }
 
 bool ModularKernel::set_active_fs_module(const std::string& name) {
     auto it = modules_.find(name);
