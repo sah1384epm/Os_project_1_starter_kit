@@ -18,14 +18,21 @@ int Layer3_OSApi::open(const std::string& path, OpenMode mode) {
 }
 
 int Layer3_OSApi::read(int handle, std::vector<uint8_t>& out_buffer, size_t max_bytes) {
-    // TODO
-    // Send a traced read request to Layer 2 and update the output buffer.
-
-    // YOUR CODE HERE
-    (void)handle;
-    (void)out_buffer;
-    (void)max_bytes;
-    return ErrorCode::InvalidHandle;
+    tracer_.record_layer_transition(3, 2, "READ");
+    tracer_.record_call_depth(4);
+    out_buffer.assign(max_bytes, 0);
+    ParameterBlock pb{};
+    pb.op = LayerOp::Read;
+    pb.handle = handle;
+    pb.buffer = out_buffer.data();
+    pb.length = max_bytes;
+    layer2_.process_request(pb);
+    if (pb.status > 0) {
+        out_buffer.resize(static_cast<size_t>(pb.status));
+    } else {
+        out_buffer.clear();
+    }
+    return pb.status;
 }
 
 int Layer3_OSApi::write(int handle, const std::vector<uint8_t>& data) {
