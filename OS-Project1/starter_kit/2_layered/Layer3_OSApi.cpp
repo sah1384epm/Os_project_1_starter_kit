@@ -36,32 +36,32 @@ int Layer3_OSApi::read(int handle, std::vector<uint8_t>& out_buffer, size_t max_
 }
 
 int Layer3_OSApi::write(int handle, const std::vector<uint8_t>& data) {
-    // TODO
-    // Send a traced write request to Layer 2 and return its status.
-
-    // YOUR CODE HERE
-    (void)handle;
-    (void)data;
-    return ErrorCode::InvalidHandle;
+    tracer_.record_layer_transition(3, 2, "WRITE");
+    ParameterBlock pb;
+    pb.op = LayerOp::Write;
+    pb.handle = handle;
+    pb.write_buffer = data.data();
+    pb.length = data.size();
+    layer2_.process_request(pb);
+    return pb.status;
 }
 
 int Layer3_OSApi::close(int handle) {
-    // TODO
-    // Send a traced close request to Layer 2 and return its status.
-
-    // YOUR CODE HERE
-    (void)handle;
-    return ErrorCode::InvalidHandle;
+    tracer_.record_layer_transition(3, 2, "CLOSE");
+    ParameterBlock pb;
+    pb.op = LayerOp::Close;
+    pb.handle = handle;
+    layer2_.process_request(pb);
+    return pb.status;
 }
 
 void Layer3_OSApi::console_write(const std::string& text) {
-    // TODO
-    // Send a traced console-output request to Layer 2.
-
-    // YOUR CODE HERE
-    (void)text;
+    tracer_.record_layer_transition(3, 2, "CONSOLE_WRITE");
+    ParameterBlock pb;
+    pb.op = LayerOp::ConsoleWrite;
+    pb.text = text;
+    layer2_.process_request(pb);
 }
-
 std::string Layer3_OSApi::get_architecture_name() const {
     return "Strict Layered Approach";
 }
