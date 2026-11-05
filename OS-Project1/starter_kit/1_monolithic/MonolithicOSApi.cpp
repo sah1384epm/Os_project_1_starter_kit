@@ -1,3 +1,4 @@
+```cpp
 #include "MonolithicOSApi.hpp"
 
 namespace os_sim {
@@ -26,6 +27,7 @@ int MonolithicOSApi::read(int handle, std::vector<uint8_t>& out_buffer, size_t m
     }
     return result;
 }
+
 int MonolithicOSApi::write(int handle, const std::vector<uint8_t>& data) {
     SyscallArgs args;
     args.handle = handle;
@@ -33,18 +35,17 @@ int MonolithicOSApi::write(int handle, const std::vector<uint8_t>& data) {
     args.count = data.size();
     return kernel_.syscall(SYS_WRITE, args);
 }
+
 int MonolithicOSApi::close(int handle) {
     SyscallArgs args;
     args.handle = handle;
     return kernel_.syscall(SYS_CLOSE, args);
 }
+
 void MonolithicOSApi::console_write(const std::string& text) {
-    void MonolithicOSApi::console_write(const std::string& text) {
     SyscallArgs args;
     args.text = text;
     kernel_.syscall(SYS_CONSOLE_WRITE, args);
-}
-    (void)text;
 }
 
 std::string MonolithicOSApi::get_architecture_name() const {
@@ -53,3 +54,4 @@ std::string MonolithicOSApi::get_architecture_name() const {
 
 } // namespace monolithic
 } // namespace os_sim
+```
